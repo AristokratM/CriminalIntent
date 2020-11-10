@@ -6,15 +6,16 @@ import kotlin.collections.ArrayList
 
 class CrimeLab private constructor(context: Context){
     companion object {
-        private var crimeLab : CrimeLab? = null
-        var crimes = ArrayList<Crime>()
-            private set
-        fun get(context: Context) : CrimeLab{
-            if(crimeLab == null) {
+        private var crimeLab: CrimeLab? = null
+        fun get(context: Context): CrimeLab {
+            if (crimeLab == null) {
                 crimeLab = CrimeLab(context)
             }
             return crimeLab!!
         }
+    }
+        var crimes = ArrayList<Crime>()
+            private set
         init {
             for (i in 0..99) {
                 val crime = Crime()
@@ -24,5 +25,5 @@ class CrimeLab private constructor(context: Context){
             }
         }
         fun getCrime(id: UUID) : Crime  = crimes.first { crime -> crime.id == id  }
-    }
+
 }
