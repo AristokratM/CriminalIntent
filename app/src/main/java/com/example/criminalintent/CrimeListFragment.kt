@@ -19,6 +19,8 @@ class CrimeListFragment : Fragment() {
     private lateinit var crimeRecyclerView: RecyclerView
     private  var adapter: CrimeAdapter? = null
     private val REQUEST_CRIME = 1
+    private  var changedPosition : Int = 0
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,6 +56,7 @@ class CrimeListFragment : Fragment() {
         }
 
         override fun onClick(v: View?) {
+            changedPosition = layoutPosition
             val intent = CrimeActivity.newIntent(context!!, crime.id)
             startActivityForResult(intent, REQUEST_CRIME)
 
@@ -99,7 +102,7 @@ class CrimeListFragment : Fragment() {
             crimeRecyclerView.adapter = adapter
         }
         else {
-            adapter!!.notifyDataSetChanged()
+            adapter!!.notifyItemChanged(changedPosition)
         }
     }
 }
