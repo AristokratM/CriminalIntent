@@ -1,5 +1,6 @@
 package com.example.criminalintent
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.view.LayoutInflater
@@ -7,15 +8,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import java.util.*
-import kotlin.collections.ArrayList
 
 class CrimeListFragment : Fragment() {
+
+
+
     private lateinit var crimeRecyclerView: RecyclerView
+    private  var adapter: CrimeAdapter? = null
+    private val REQUEST_CRIME = 1
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -24,7 +28,7 @@ class CrimeListFragment : Fragment() {
         var view = inflater.inflate(R.layout.fragment_crime_list, container, false)
         crimeRecyclerView = view.findViewById(R.id.crime_recycler_view)
         crimeRecyclerView.layoutManager = LinearLayoutManager(activity)
-        udpateUI()
+        updateUI()
         return view
         
     }
@@ -34,7 +38,7 @@ class CrimeListFragment : Fragment() {
         private var titleTextView : TextView
         private var dateTextView : TextView
         private lateinit var crime : Crime
-        private lateinit var solvedImageView : ImageView
+        private  var solvedImageView : ImageView
 
         init {
             itemView.setOnClickListener(this)
@@ -42,7 +46,7 @@ class CrimeListFragment : Fragment() {
             dateTextView = itemView.findViewById(R.id.crime_date)
             solvedImageView = itemView.findViewById(R.id.crime_solved)
         }
-        fun bind(cr:Crime) {
+        fun bind(cr: Crime) {
             crime = cr
             titleTextView.text = crime.title
             dateTextView.text = DateFormat.format("EEE, MMM dd, yyyy", crime.date)
@@ -50,7 +54,9 @@ class CrimeListFragment : Fragment() {
         }
 
         override fun onClick(v: View?) {
-            Toast.makeText(activity, "${crime.title} clicked!", Toast.LENGTH_SHORT).show()
+            val intent = CrimeActivity.newIntent(context!!, crime.id)
+            startActivityForResult(intent, REQUEST_CRIME)
+
         }
     }
 
@@ -71,10 +77,29 @@ class CrimeListFragment : Fragment() {
         }
 
     }
-    fun udpateUI() {
+
+    override fun onResume() {
+        super.onResume()
+        updateUI()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CRIME) {
+
+        }
+    }
+
+    fun updateUI() {
         var crimeLab = CrimeLab.get(activity!!)
         var crimes = crimeLab.crimes
-        var adapter = CrimeAdapter(crimes)
-        crimeRecyclerView.adapter = adapter
+        if( adapter == null ) {
+            adapter = CrimeAdapter(crimes)
+            crimeRecyclerView.adapter = adapter
+        }
+        else {
+            adapter!!.notifyDataSetChanged()
+        }
     }
 }
