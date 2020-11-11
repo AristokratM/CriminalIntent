@@ -1,5 +1,6 @@
 package com.example.criminalintent
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.format.DateFormat
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,7 +21,6 @@ class CrimeListFragment : Fragment() {
     private lateinit var crimeRecyclerView: RecyclerView
     private  var adapter: CrimeAdapter? = null
     private val REQUEST_CRIME = 1
-    private  var changedPosition : Int = 0
 
 
     override fun onCreateView(
@@ -56,9 +57,8 @@ class CrimeListFragment : Fragment() {
         }
 
         override fun onClick(v: View?) {
-            changedPosition = layoutPosition
-            val intent = CrimeActivity.newIntent(context!!, crime.id)
-            startActivityForResult(intent, REQUEST_CRIME)
+            val intent = CrimePagerActivity.newIntent(activity as Context, crime.id)
+            println(startActivity(intent))
 
         }
     }
@@ -102,7 +102,7 @@ class CrimeListFragment : Fragment() {
             crimeRecyclerView.adapter = adapter
         }
         else {
-            adapter!!.notifyItemChanged(changedPosition)
+            adapter!!.notifyDataSetChanged()
         }
     }
 }
